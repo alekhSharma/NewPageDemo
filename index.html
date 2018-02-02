@@ -1,0 +1,521 @@
+<html>
+    <head title="Dx Dashboard">
+        <style>
+               .modal {
+                        display: none; /* Hidden by default */
+                        position: fixed; /* Stay in place */
+                        z-index: 1; /* Sit on top */
+                        padding-top: 100px; /* Location of the box */
+                        left: 0;
+                        top: 0;
+                        width: 100%; /* Full width */
+                        height: 100%; /* Full height */
+                        overflow: auto; /* Enable scroll if needed */
+                        background-color: rgb(0,0,0); /* Fallback color */
+                        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+                    }
+
+                    /* Modal Content */
+                    .modal-content {
+                        position: relative;
+                        background-color: #fefefe;
+                        margin: auto;
+                        padding: 0;
+                        border: 1px solid #888;
+                        width: 50%;
+                        color:black;
+                        text-align:center;
+                        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+                        -webkit-animation-name: animatetop;
+                        -webkit-animation-duration: 0.4s;
+                        animation-name: animatetop;
+                        animation-duration: 0.4s
+                    }
+
+                    /* Add Animation */
+                    @-webkit-keyframes animatetop {
+                        from {top:-300px; opacity:0} 
+                        to {top:0; opacity:1}
+                    }
+
+                    @keyframes animatetop {
+                        from {top:-300px; opacity:0}
+                        to {top:0; opacity:1}
+                    }
+
+                    /* The Close Button */
+                    .close {
+                        color: white;
+                        float: right;
+                        font-size: 28px;
+                        font-weight: bold;
+                    }
+
+                    .close:hover,
+                    .close:focus {
+                        color: #000;
+                        text-decoration: none;
+                        cursor: pointer;
+                    }
+
+                    .modal-header {
+                        padding: 2px 16px;
+                        background-color: #5cb85c;
+                        color: white;
+                    }
+
+                    .modal-body {padding: 2px 16px;}
+
+                    table, th, td 
+                    {
+                        margin:10px 0;
+                        border:solid 1px #333;
+                        padding:2px 4px;
+                        font:15px Verdana;
+                        overflow: inherit;
+                      
+                        width: 50%;
+                        padding: 8px;
+                        text-align: center;
+                        z-index = -1;
+                        border-bottom: 1px solid #ddd;
+                    }
+                   
+
+        </style>
+
+        <!-- script -->
+
+        <script src="/socket.io/socket.io.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">  
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-colors-flat.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+
+    </head>
+
+    <!-- body tag -->
+    <body class="w3-flat-clouds" style="margin-bottom:20%;">
+        
+        <!-- Header of the page -->
+        <div class="w3-panel">
+            <nav class="w3-top navbar navbar-expand-sm navbar-dark fixed-top" style="background-color: black">
+            <a class="navbar-brand w3-large" href="#" >DX Dashboard</a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="#C1" class="w3-text-white w3-margin-left">Dev Hub</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#C3" class="w3-text-white w3-margin-left">Project</a>
+                </li>
+            </ul>
+            </nav>
+        </div>
+          <!-- End Header of the page -->
+
+
+   <!-- page content -->
+        <div class="container-fluid" style="margin-top:60px">
+
+            <!--Response Content -->   
+                 <div class="w3-bottom w3-bar-block bg-dark text-white" style="height: 16%;margin-left: 0px; left:0px;">
+                
+                    <h5 class="w3-container w3-bar-item bg-black w3-medium">
+                        Response
+                        <span class=" w3-margin-right w3-display-topright" style="margin-top: 10px;">
+                          <!--  <button type="button" class="myBtn " onclick="clearResponse()">Clear</button> -->
+                        </span>
+                    </h5>
+
+                    <p class="w3-container" id="demo"> </p>
+                </div>
+            <!-- End Response Content --> 
+
+        <!-- Command content -->
+          <!-- INDEX OF THE PAGE -->
+           <div class="w3-container w3-border-bottom w3-text-black">
+                <a href="#C1" class="w3-xlarge w3-margin-right w3-text-grey">Dev Hub</a>
+                <a href="#C2" class="w3-xlarge w3-margin-right w3-text-grey">
+                Project</a>
+                <a href="#C3" class="w3-xlarge w3-margin-right w3-text-grey">Scratch Orgs</a>
+                <a href="#C4" class="w3-xlarge w3-margin-right w3-text-grey">
+                Source</a>
+            </div>
+            
+          <!-- END INDEX OF THE PAGE -->
+        
+          <!-- Dev Hub Area -->
+            <div class="w3-container w3-margin" id="C1">  
+                 <div class="w3-panel">
+                    <h5>Current Dev Hub Confriguration</h5>
+                    <p class="w3-large"> 
+                        Status  : <spam id="defaultDevHubStatus"></spam>
+                        <br/>
+                        Id  : <spam id="defaultDevHubName"></spam>
+                        <br/>
+                        Username : <spam id="defaultDevHubusername"></spam>
+                        <br/>
+                        Instance URL : <spam id="defaultDevHuburl"></spam>
+                        <br/>
+                        Alias : <spam id="defaultDevHubalias"></spam>
+                        <br/>
+                        Org Id : <spam id="defaultDevHubId"></spam>
+                    <p>  
+                </div> 
+                     <div class="w3-row">
+                    <div class="w3-col w3-margin s2 w3-center w3-border w3-round">
+                        <p class="w3-margin w3-large">Authorizes a Salesforce org by opening a browser so you can log in through salesforce.com.<p>
+                        <div class="w3-margin w3-container w3-center">
+                        <div class="bg-primary text-white w3-round">
+                            <button type="button" class="btn bg-primary text-white w3-center" onclick="AuthMyOrg()">Authenticate Dev Hub</button>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="w3-col w3-margin s2 w3-center w3-border w3-round">
+                         <p class="w3-margin w3-large"><br/>Opens the default dev hub org in your browser.<p>
+                        <div class="w3-margin w3-container w3-center">
+                        <div class="bg-danger text-white w3-round">
+                              <button type="button" class="btn bg-danger text-white" onclick="OpenDevHub()">Open Dev Hub</button>
+                        </div>
+                        </div>
+                         </div>
+                    
+                </div>
+
+            <!-- Card Authenticate -->
+              
+            <!--End Card Authenticate -->
+
+        </div>
+
+        <div class="w3-container w3-margin" id="C3">
+              <h5 class="w3-text-black w3-large">Scratch Org commands</h5>
+
+                <div class="w3-row">
+                       <div class="w3-col w3-margin s2 w3-center w3-border w3-round">
+                         <p class="w3-margin w3-large"><br/>Manage (View, Open, Delete) all orgs that Salesforce CLI has created or authenticated to.<p>
+                        <div class="w3-margin w3-container w3-center">
+                        <div class="bg-success text-white w3-round">
+                              <button type="button" class="btn bg-success text-white" id="myBtn">Manage Org</button>
+                        </div>
+                        </div>
+                         </div>
+
+                          <div class="w3-col w3-margin s2 w3-center w3-border w3-round">
+                         <p class="w3-margin w3-large"><br/>Lists all orgs that the Salesforce CLI has created or authenticated to.<p>
+                        <div class="w3-margin w3-container w3-center">
+                        <div class="bg-info text-white w3-round">
+                               <button type="button" class="btn bg-info text-white" onclick="listMyOrg()">List Orgs</button>
+                        </div>
+                        </div>
+                         </div>
+
+                         
+                          <div class="w3-col w3-margin s2 w3-center w3-border w3-round">
+                         <p class="w3-margin w3-large"><br/>Lists all orgs that the Salesforce CLI has created or authenticated to.<p>
+                        <div class="w3-margin w3-container w3-center">
+                        <div class="bg-danger text-white w3-round">
+                               <button type="button" class="btn bg-danger text-white" onclick="createOrg()">Create New Org</button>      
+                        </div>
+                        </div>
+                         </div>
+
+                </div>
+
+            <!-- Card Open Org -->
+                <!-- The Modal -->
+                <div class="w3-container w3-center">
+                <div id="myModal" class="modal">
+
+                        <!-- Modal content -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                
+                                <h2>List of Org</h2>
+                                <span class="close">&times;</span>
+                            </div>
+                            <div class="">
+                            <div class="modal-body">
+                                <p class="" id="modelDemo"></p>
+                                <div id="showData" class=""></div>
+                                <div class="" >
+                                   <input type="button" class="w3-btn w3-blue" value="Input Button" onclick="OpenSelectedOrg()">
+                                </div>
+                            </div>
+                            </div>
+                         
+                        </div>
+                        <!-- End Modal content -->
+
+                </div>
+                </div>
+                <!--End The Modal -->
+
+             </div>
+
+
+             <!-- Dev Hub Area -->
+            <div class="w3-container w3-margin" id="C1">  
+                <p class="w3-text-black w3-large">Source commands</p>
+                <div class="w3-row" style="width:70%;">
+
+                    <div class="w3-col s4 w3-center">
+                         <div class="w3-margin-left bg-danger w3-center w3-round" style="width:50%;">
+                   
+                            <button type="button" class="btn bg-danger text-white" onclick="SourcePull()">Source Pull</button>                           
+
+                         </div>
+                    </div>
+                </div>
+
+            <!-- Card Authenticate -->
+              
+            <!--End Card Authenticate -->
+
+        </div>
+
+
+
+            </div>
+            <!--End Card Open -->
+        </div>
+        <!--End Command Content -->
+
+
+     </div>
+    <!-- End page content -->
+
+<script>
+
+         var socket = io.connect( '', {'transports': ['websocket', 'polling']});
+
+             socket.emit('CheckStatus');
+             document.getElementById("defaultDevHubStatus").innerHTML = 'Checking your Status';
+            socket.on('configList',function(configList){
+             
+                console.log(configList);
+                document.getElementById("defaultDevHubName").innerHTML = configList.result.devHubId;
+                document.getElementById("defaultDevHubusername").innerHTML = configList.result.username;
+                document.getElementById("defaultDevHubalias").innerHTML = configList.result.alias;
+                document.getElementById("defaultDevHuburl").innerHTML = configList.result.instanceUrl;
+                document.getElementById("defaultDevHubId").innerHTML = configList.result.id;
+                document.getElementById("defaultDevHubStatus").innerHTML = configList.result.status;
+            
+            });
+
+            function OpenSelectedOrg(){
+
+                  $(document).ready(function(){
+                    $("input[type='button']").click(function(){
+                        var radioValue=[];
+                        radioValue= $("input[name='OpenOrg']:checked").val();
+                        if(radioValue){
+                            socket.emit('OpenThisOrg',radioValue);
+                        }
+                    });
+                    
+                });
+                
+            }
+
+             function SourcePush(){
+                    socket.emit('SourcePull');
+                    socket.on('Source Pulling',function(data){})
+                   socket.on('OrgOpened')
+            }
+
+            function OpenDevHub(){
+                    socket.emit('OpenDevHub');
+                    document.getElementById("demo").innerHTML = 'Working on your request';
+                    socket.on('OpenDevHubResponse',function(OpenDevHubResponse){
+
+                        console.log(OpenDevHubResponse);
+                        if(OpenDevHubResponse.status==0){
+                             document.getElementById("demo").innerHTML = 
+                             'Username ->' + OpenDevHubResponse.result.username + ' <br/>' + 
+                             'Org Id ->' + OpenDevHubResponse.result.orgId + '<br/>' +
+                             'URL ->' + OpenDevHubResponse.result.url  ;
+                        }
+                    })
+            }
+
+            function createOrg(){
+                    socket.emit('CreateNewOrg');
+                     document.getElementById("demo").innerHTML = 'Working on your request';
+                    socket.on('CreateNewOrgResponse', function(CreateNewOrgResponse){
+                        if(OpenDevHubResponse.status==0){
+                            document.getElementById("demo").innerHTML = CreateNewOrgResponse;
+                        }
+                    });
+
+            }
+
+			function listMyOrg()
+                {
+			            socket.emit('ListAllOrgs');
+                        document.getElementById("demo").innerHTML = 'Working on your request';
+                        //when we receive buttonUpdate, do this
+                        socket.on('listMyOrgReturn', function(listMyOrg){
+                            console.log(listMyOrg);
+                            
+                          if(listMyOrg.status==0){
+                             var orgList=[];
+                          
+                            console.log(listMyOrg.result.nonScratchOrgs[0]);
+                            for(var i=0;i<listMyOrg.result.nonScratchOrgs.length;i++){
+                            orgList.push(listMyOrg.result.nonScratchOrgs[i].username);
+                             }
+
+                            for(var i=0;i<listMyOrg.result.scratchOrgs.length;i++){
+                            orgList.push(listMyOrg.result.scratchOrgs[i].username);
+                             }
+                           
+                            document.getElementById("demo").innerHTML = orgList.join("\r\n");
+                        
+
+                        }
+                            });
+
+
+                    
+                }
+      
+            function clearResponse(){
+                    document.getElementById("demo").innerHTML = '';                  
+            }
+
+            function AuthMyOrg(){
+                socket.emit('AuthMyOrg');
+            }
+
+            
+            // Get the modal
+            var modal = document.getElementById('myModal');
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal 
+             var newModeldata=[];
+             var selectedOrg;
+            btn.onclick = function() {
+            
+                socket.emit('ModelList');
+			//    console.log(socket);
+                         document.getElementById("demo").innerHTML = 'Working on your request';
+                        socket.on('ListData', function(Modeldata){
+
+                        newModeldata = Array(Modeldata);
+                        //console.log(typeof newModeldata);
+
+                       for(var i=0;i<newModeldata[0].result.nonScratchOrgs.length;i++){ 
+                       newModeldata.forEach(function(obj) { 
+                                    obj.result.nonScratchOrgs[i].IsChecked = false; 
+                           }); 
+                       }
+
+                       for(var i=0;i<newModeldata[0].result.scratchOrgs.length;i++){ 
+                       newModeldata.forEach(function(obj) { 
+                                    obj.result.scratchOrgs[i].IsChecked = false; 
+                           }); 
+                       }
+
+                      
+
+                           // console.log(newModeldata);      
+                       
+                        // Create Table to display in model
+                        var col =[];
+                        for(var i=0;i<newModeldata[0].result.nonScratchOrgs.length;i++){
+                            for(var key in newModeldata[0].result.nonScratchOrgs[i]){
+                                if(col.indexOf(key) === -1 &&( key=='connectedStatus' || key=='username' || key=='orgId')){
+                                  {
+                                    col.push(key);
+                                  }
+                                }
+                            }
+                        }
+                        var sortedcol =[];
+                        sortedcol = col;
+                        sortedcol.sort();
+
+                        var table = document.createElement("table");
+
+                        var tr = table.insertRow(-1);
+
+                        //console.log(col);
+
+                        for(var i=0;i<=sortedcol.length;i++){
+                          
+                            var th = document.createElement("th");
+                            console.log(sortedcol[i]);
+                            
+                            th.innerHTML = sortedcol[i];
+                            
+                           
+                            if(i==sortedcol.length){
+                                th.innerHTML = 'Select'
+                            }
+
+                             tr.appendChild(th);
+                        }
+
+                        for(var i=0;i<newModeldata[0].result.nonScratchOrgs.length;i++){
+                            tr = table.insertRow(-1);
+                                for(var j=0;j<col.length;j++){
+                                var tabCell = tr.insertCell(-1);
+                                tabCell.innerHTML = newModeldata[0].result.nonScratchOrgs[i][col[j]]; 
+                                }
+                                var tabCell = tr.insertCell(-1);
+                                tabCell.innerHTML = '<input type="radio" name="OpenOrg" value='+newModeldata[0].result.nonScratchOrgs[i].username+'/>';
+                        }
+
+                        for(var i=0;i<newModeldata[0].result.scratchOrgs.length;i++){    
+                            tr = table.insertRow(-1);
+                                for(var j=0;j<col.length;j++){
+                                var tabCell = tr.insertCell(-1);                           
+                                tabCell.innerHTML = newModeldata[0].result.scratchOrgs[i][col[j]]; 
+                                 }   
+                                 
+                                var tabCell = tr.insertCell(-1);
+                                tabCell.innerHTML = '<input type="radio" name="OpenOrg" value='+newModeldata[0].result.scratchOrgs[i].username+'/>';
+                        }
+
+                        var divContainer = document.getElementById("showData");
+                        divContainer.innerHTML="";
+                        divContainer.appendChild(table);
+                        modal.style.display = "block";
+                        document.getElementById("demo").innerHTML = '';
+
+                 });       
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+  
+       
+        
+        </script>
+        <!-- script End -->
+        
+    </body>
+    <!-- End Body tag -->
+</html>
